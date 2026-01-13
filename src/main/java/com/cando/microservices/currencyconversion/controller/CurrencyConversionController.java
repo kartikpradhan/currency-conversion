@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,8 @@ public class CurrencyConversionController {
 	private CurrencyExchangeProxy proxy;
 	@Autowired
 	private RestClient restClient;
+	@Autowired
+	private Environment environment;
 
 	@GetMapping("currency-conversion/from/{from}/to/{to}/quantity/{quantity}")
 	public CurrencyConversion calculateCurrencyConversion(@PathVariable String from, @PathVariable String to,
@@ -52,6 +55,8 @@ public class CurrencyConversionController {
 		CurrencyConversion currencyConversion = restClient.get()
 				.uri("http://localhost:8000/currency-exchange/from/{from}/to/{to}", uriVariable).retrieve()
 				.body(CurrencyConversion.class);
+		
+		currencyConversion.setEnvironment(environment.getProperty("local.server.port"));
 
 		return new CurrencyConversion(currencyConversion.getId(), from, to, quantity,
 				currencyConversion.getConversionMultiple(),
