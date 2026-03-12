@@ -53,7 +53,8 @@ public class CurrencyConversionController {
 		uriVariable.put("to", to);
 
 		CurrencyConversion currencyConversion = restClient.get()
-				.uri("http://localhost:8000/currency-exchange/from/{from}/to/{to}", uriVariable).retrieve()
+				.uri("http://localhost:8000/currency-exchange/from/{from}/to/{to}", uriVariable)
+				.retrieve()
 				.body(CurrencyConversion.class);
 		
 		currencyConversion.setEnvironment(environment.getProperty("local.server.port"));
